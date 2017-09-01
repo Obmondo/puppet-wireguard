@@ -11,8 +11,11 @@ Documentation=https://git.zx2c4.com/WireGuard/about/src/tools/wg.8
 [Service]
 Type=oneshot
 RemainAfterExit=yes
+EnvironmentFile=/etc/wireguard/.%i
 ExecStartPre=/sbin/ip link add dev %i type wireguard
+ExecStartPre=/sbin/ip addr add dev %i ${VIRTUAL_IP}
 ExecStart=/usr/bin/wg setconf %i /etc/wireguard/%i.conf
+ExecStartPost=/sbin/ip link set up dev %i
 ExecStop=/sbin/ip link del %i
 ExecReload=/usr/bin/wg setconf %i /etc/wireguard/%i.conf
 
